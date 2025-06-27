@@ -1,25 +1,57 @@
 ﻿using System.Text;
-using DesafioProjetoHospedagem.Models;
+using ProjetoHotel2025.Models;
+using ProjetoHotel2025.Services;
 
 Console.OutputEncoding = Encoding.UTF8;
 
-// Cria os modelos de hóspedes e cadastra na lista de hóspedes
-List<Pessoa> hospedes = new List<Pessoa>();
+var hospedeService = new HospedeService();
+var suiteService = new SuiteService();
+var reservaService = new ReservaService(hospedeService, suiteService);
 
-Pessoa p1 = new Pessoa(nome: "Hóspede 1");
-Pessoa p2 = new Pessoa(nome: "Hóspede 2");
+int opcao = 0;
+do
+{
+    Console.Clear();
+    Console.WriteLine("\n" +
+        "Menu - Sistema de Hospedagem\n" +
+        "1 - Cadastrar Hóspede\n" +
+        "2 - Criar Suíte\n" +
+        "3 - Cadastrar Reserva\n" +
+        "4 - Listar Reservas\n" +
+        "5 - Listar Hóspedes Cadastrados\n" +
+        "6 - Sair do Menu");
+    Console.WriteLine("Escolha uma opção: ");
 
-hospedes.Add(p1);
-hospedes.Add(p2);
-
-// Cria a suíte
-Suite suite = new Suite(tipoSuite: "Premium", capacidade: 2, valorDiaria: 30);
-
-// Cria uma nova reserva, passando a suíte e os hóspedes
-Reserva reserva = new Reserva(diasReservados: 5);
-reserva.CadastrarSuite(suite);
-reserva.CadastrarHospedes(hospedes);
-
-// Exibe a quantidade de hóspedes e o valor da diária
-Console.WriteLine($"Hóspedes: {reserva.ObterQuantidadeHospedes()}");
-Console.WriteLine($"Valor diária: {reserva.CalcularValorDiaria()}");
+    if (!int.TryParse(Console.ReadLine(), out opcao))
+    {
+        Console.WriteLine("Entrada Inválida. Digite um número.");
+        Console.ReadKey();
+        continue;
+    }
+    switch (opcao)
+    {
+        case 1:
+            hospedeService.cadastroHospede();
+            break;
+        case 2:
+            suiteService.CriarSuite();
+            break;
+        case 3:
+            reservaService.CadastrarReserva();
+            break;
+        case 4:
+            reservaService.ListarReservas();
+            break;
+        case 5:
+            hospedeService.ListarHospedes();
+            break;
+        case 6:
+            Console.WriteLine("Encerrando o sistema...");
+            break;
+        default:
+            Console.WriteLine("Opção inválida.");
+            break; 
+    }
+    Console.WriteLine("\nPressione qualquer tecla para continuar...");
+    Console.ReadKey();
+} while (opcao != 6);
